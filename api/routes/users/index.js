@@ -8,7 +8,7 @@ router.get('/', async (request, response) => {
     response.send(JSON.stringify(users))
 })
 
-router.post('/', async (request, response) => {
+router.post('/', async (request, response, next) => {
     try {
         const data = request.body
         const user = new User(data)
@@ -16,12 +16,11 @@ router.post('/', async (request, response) => {
         response.status(201)
         response.send(JSON.stringify(user))  
     } catch (error) {
-        response.status(400)
-        response.send(JSON.stringify({message: error.message}))
+        next(error)
     }
 })
 
-router.get('/:idUser', async (request, response) => {
+router.get('/:idUser', async (request, response, next) => {
     try {
         const id = request.params.idUser
         const user = new User({id: id})
@@ -29,12 +28,11 @@ router.get('/:idUser', async (request, response) => {
         response.status(200)
         response.send(JSON.stringify(user))
     } catch (error) {
-        response.status(404)
-        response.send(JSON.stringify({message: error.message}))
+        next(error)
     }
 })
 
-router.put('/:idUser', async (request, response) => {
+router.put('/:idUser', async (request, response, next) => {
     try {
         const id = request.params.idUser
         const data = Object.assign({}, request.body, {id: id})
@@ -44,12 +42,11 @@ router.put('/:idUser', async (request, response) => {
         //response.send(JSON.stringify({message: 'User was successfully updated.'}))
         response.end()
     } catch (error) {
-        response.status(400)
-        response.send(JSON.stringify({message: error.message}))
+        next(error)
     }
 })
 
-router.delete('/:idUser', async (request, response) => {
+router.delete('/:idUser', async (request, response, next) => {
     try {
         const id = request.params.idUser
         const user = new User({id: id})
@@ -59,8 +56,7 @@ router.delete('/:idUser', async (request, response) => {
         //response.send(JSON.stringify({message: 'User was successfully deleted.'}))
         response.end()
     } catch (error) {
-        response.status(404)
-        response.send(JSON.stringify({message: error.message}))  
+        next(error) 
     }
 
 })

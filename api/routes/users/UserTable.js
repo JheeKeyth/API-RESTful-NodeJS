@@ -1,5 +1,6 @@
 const model = require('./UsersModel')
 const UsersModel = require('./UsersModel')
+const NotFound = require('../../errors/NotFound')
 
 module.exports = {
     list(){
@@ -16,7 +17,7 @@ module.exports = {
         })
 
         if(!user) 
-            throw new Error('User not found.')
+            throw new NotFound()
         return user
     },
 

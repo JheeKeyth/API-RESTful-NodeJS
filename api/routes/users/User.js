@@ -1,4 +1,6 @@
 const UserTable = require('./UserTable')
+const FieldInvalid = require('../../errors/FieldInvalid')
+const DataNotProvided = require('../../errors/DataNotProvided')
 
 class User{
     constructor({id, username, email, type, createdAt, updatedAt}){
@@ -43,7 +45,7 @@ class User{
         })
 
         if(Object.keys(userUpdate).length === 0)
-            throw new Error('Field(s) for update were not informed.')
+            throw new DataNotProvided()
             
         await UserTable.update(this.id, userUpdate)
     }
@@ -57,7 +59,7 @@ class User{
         fields.forEach(field =>{
             const value = this[field]
             if(typeof value !== 'string' || value.length === 0)
-                throw new Error(`Field '${field}' is invalid.`)
+                throw new FieldInvalid(field)
         })
     }
 }
