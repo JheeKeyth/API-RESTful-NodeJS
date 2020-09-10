@@ -11,6 +11,7 @@ class User{
     }
 
     async create(){
+        this.validate()
         const result = await UserTable.insert({
             username: this.username,
             email: this.email,
@@ -47,7 +48,18 @@ class User{
         await UserTable.update(this.id, userUpdate)
     }
 
+    delete(){
+        return UserTable.delete(this.id)
+    }
 
+    validate(){
+        const fields = ['username', 'email', 'type']
+        fields.forEach(field =>{
+            const value = this[field]
+            if(typeof value !== 'string' || value.length === 0)
+                throw new Error(`Field '${field}' is invalid.`)
+        })
+    }
 }
 
 module.exports = User
