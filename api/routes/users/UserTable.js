@@ -4,7 +4,7 @@ const NotFound = require('../../errors/NotFound')
 
 module.exports = {
     list(){
-        return model.findAll()
+        return model.findAll({raw: true})
     },
 
     insert(user){

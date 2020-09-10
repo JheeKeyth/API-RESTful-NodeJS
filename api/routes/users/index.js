@@ -1,11 +1,13 @@
 const router = require('express').Router()
 const UserTable = require('./UserTable')
 const User = require('./User')
+const SerializerUser = require('../../Serializer').SerializerUser
 
 router.get('/', async (request, response) => {
     const users = await UserTable.list()
     response.status(200)
-    response.send(JSON.stringify(users))
+    const serializer = new SerializerUser(response.getHeader('Content-Type'))
+    response.send(serializer.serialize(users))
 })
 
 router.post('/', async (request, response, next) => {
@@ -14,7 +16,8 @@ router.post('/', async (request, response, next) => {
         const user = new User(data)
         await user.create()
         response.status(201)
-        response.send(JSON.stringify(user))  
+        const serializer = new SerializerUser(response.getHeader('Content-Type'))
+        response.send(serializer.serialize(user))  
     } catch (error) {
         next(error)
     }
@@ -26,7 +29,8 @@ router.get('/:idUser', async (request, response, next) => {
         const user = new User({id: id})
         await user.get()
         response.status(200)
-        response.send(JSON.stringify(user))
+        const serializer = new SerializerUser(response.getHeader('Content-Type'))
+        response.send(serializer.serialize(user))
     } catch (error) {
         next(error)
     }

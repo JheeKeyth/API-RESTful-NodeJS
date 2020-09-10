@@ -6,8 +6,25 @@ const NotFound = require('./errors/NotFound')
 const FieldInvalid = require('./errors/FieldInvalid')
 const DataNotProvided = require('./errors/DataNotProvided')
 const UnsupportedType = require('./errors/UnsupportedType')
+const typesAccepted = require('./Serializer').typesAccepted
 
 app.use(bodyParser.json())
+app.use((request, response, next) => {
+    let typeRequest = request.header('Accept')
+    
+    if(typeRequest === '*/*')
+        typeRequest = 'application/json'
+
+    if(typesAccepted.indexOf(typeRequest) === -1){
+        response.status(406)
+        response.end()
+        return
+    }
+
+    response.setHeader('Content-Type', typeRequest)
+    next()
+
+})
 
 const router = require('./routes/users')
 app.use('/api/users', router)
