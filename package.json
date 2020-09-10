@@ -1,0 +1,26 @@
+{
+  "name": "api-restful",
+  "version": "1.0.0",
+  "description": "Desenvolvendo uma API Restful em NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JheeKeyth/API-RESTful-NodeJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JheeKeyth/API-RESTful-NodeJS/issues"
+  },
+  "homepage": "https://github.com/JheeKeyth/API-RESTful-NodeJS#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "config": "^3.3.1",
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0",
+    "sequelize": "^6.3.5"
+  }
+}
