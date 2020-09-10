@@ -7,6 +7,7 @@ const FieldInvalid = require('./errors/FieldInvalid')
 const DataNotProvided = require('./errors/DataNotProvided')
 const UnsupportedType = require('./errors/UnsupportedType')
 const typesAccepted = require('./Serializer').typesAccepted
+const SerializerError = require('./Serializer').SerializerError
 
 app.use(bodyParser.json())
 app.use((request, response, next) => {
@@ -38,9 +39,12 @@ app.use((error, request, response, next) => {
         status = 400
     if(error instanceof UnsupportedType)
         status = 406
-        
+    
+    const serializer = new SerializerError(
+        response.getHeader('Content-Type')
+    )
     response.status(status)       
-    response.send(JSON.stringify({
+    response.send(serializer.serialize({
         message: error.message,
         id: error.id
     }))

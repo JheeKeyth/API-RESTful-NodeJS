@@ -1,13 +1,31 @@
 const UnsupportedType = require('./errors/UnsupportedType')
+const jsontoxml = require('jsontoxml')
 
 class Serializer {
     json(data){
         return JSON.stringify(data)
     }
 
+    xml(data){
+        let tag = this.tagSingular
+        if(Array.isArray(data)){
+            tag = this.tagPlural
+            data = data.map((item) => {
+                return {
+                    [this.tagSingular]: item
+                }
+            })
+        }
+        return jsontoxml({ [tag]: data })
+    }
+
     serialize(data){
+        data = this.filter(data)
+
         if(this.contentType === 'application/json')
-            return this.json(this.filter(data))
+            return this.json(data)
+        if(this.contentType === 'application/xml')
+            return this.xml(data)
 
         throw new UnsupportedType(this.contentType)
     }
@@ -36,17 +54,28 @@ class Serializer {
 }
 //Design Patterns: Template Method
 class SerializerUser extends Serializer{
-    constructor(contentType){
+    constructor(contentType, extraFields){
         super()
         this.contentType = contentType
-        this.fieldsPublic = ['id', 'username', 'type']
+        this.fieldsPublic = ['id', 'username', 'type'].concat(extraFields || [])
+        this.tagSingular = 'user'
+        this.tagPlural = 'users'
+    }
+}
+
+class SerializerError extends Serializer{
+    constructor(contentType, extraFields){
+        super()
+        this.contentType = contentType
+        this.fieldsPublic = ['id', 'message'].concat(extraFields || [])
+        this.tagSingular = 'error'
+        this.tagPlural = 'errors'
     }
 }
 
 module.exports = {
     Serializer: Serializer,
     SerializerUser: SerializerUser,
-    typesAccepted: [
-        'application/json'
-    ]
+    SerializerError: SerializerError,
+    typesAccepted: ['application/json', 'application/xml']
 }

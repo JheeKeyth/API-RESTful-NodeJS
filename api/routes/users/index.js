@@ -29,7 +29,10 @@ router.get('/:idUser', async (request, response, next) => {
         const user = new User({id: id})
         await user.get()
         response.status(200)
-        const serializer = new SerializerUser(response.getHeader('Content-Type'))
+        const serializer = new SerializerUser(
+            response.getHeader('Content-Type'),
+            ['email', 'createdAt', 'updatedAt']
+        )
         response.send(serializer.serialize(user))
     } catch (error) {
         next(error)
